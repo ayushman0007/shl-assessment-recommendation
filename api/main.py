@@ -1,3 +1,7 @@
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fastapi import FastAPI
 from pydantic import BaseModel
 from retrieval.retrieve import search_assessments
