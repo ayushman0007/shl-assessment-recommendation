@@ -2,6 +2,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 from retrieval.retrieve import search_assessments
@@ -32,9 +33,9 @@ def recommend(request: QueryRequest):
 
     return {"recommended_assessments": output}
 
-import os
+
 import uvicorn
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    uvicorn.run("api.main:app", host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)
