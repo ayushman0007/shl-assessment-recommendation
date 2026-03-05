@@ -1,6 +1,5 @@
 import faiss
 import pickle
-from sentence_transformers import SentenceTransformer
 import numpy as np
 import os
 
@@ -9,16 +8,26 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 index_path = os.path.join(BASE_DIR, "embeddings", "faiss_index.index")
 metadata_path = os.path.join(BASE_DIR, "embeddings", "metadata.pkl")
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# Lazy load to reduce startup memory
+model = None
+index = None
+metadata = None
 
-index = faiss.read_index(index_path)
-
-with open(metadata_path, "rb") as f:
-    metadata = pickle.load(f)
+def _initialize():
+    global model, index, metadata
+    if model is None:
+        from sentence_transformers import SentenceTransformer
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+    if index is None:
+        index = faiss.read_index(index_path)
+    if metadata is None:
+        with open(metadata_path, "rb") as f:
+            metadata = pickle.load(f)
 
 
 def search_assessments(query, top_k=10):
-
+    _initialize()
+    
     query_vector = model.encode([query])
 
     distances, indices = index.search(np.array(query_vector), top_k)
@@ -29,7 +38,8 @@ def search_assessments(query, top_k=10):
 
 
 if __name__ == "__main__":
-
+    _initialize()
+    
     query = input("Enter query: ")
 
     results = search_assessments(query)
