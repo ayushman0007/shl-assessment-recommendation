@@ -10,7 +10,7 @@ query = st.text_area("Query")
 
 if st.button("Get Recommendations"):
     # Get API URL from environment or use default
-    api_url = os.getenv("API_URL", "https://shl-assessment-api-u110.onrender.com")
+    api_url = os.getenv("API_URL", "https://shl-assessment-recommendation-kk6m.onrender.com")
     
     response = requests.post(
         f"{api_url}/recommend",
